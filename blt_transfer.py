@@ -51,7 +51,8 @@ def upload_file_to_blt(local_path=None, remote_path="~", username=None):
     # If it's a dir, assume you want the dirname to be the same
     if os.path.isdir(local_path):
         conn.makedirs(f"{remote_path}/{os.path.basename(local_path)}")
-        conn.put_r(local_path, f"{remote_path}/{os.path.basename(local_path)}/")
+        conn.put_r(local_path,
+                   f"{remote_path}/{os.path.basename(local_path)}/")
     else:
         conn.put(local_path, remote_path)
 
@@ -78,19 +79,46 @@ def download_file_from_blt(local_path=".", remote_path=None, username=None):
     if conn.isdir(remote_path):
         remote_basename = remote_path.split("/")[-1]
         os.makedirs(f"{os.path.dirname(local_path)}/{remote_basename}")
-        conn.get_d(remote_path, f"{os.path.dirname(local_path)}/{remote_basename}")
+        conn.get_d(remote_path,
+                   f"{os.path.dirname(local_path)}/{remote_basename}")
     else:
         conn.get(remote_path, local_path)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-u", "--upload", action="store_true", default=False, help="Use upload mode")
-    parser.add_argument("-d", "--download", action="store_true", default=False, help="Use download mode")
-    parser.add_argument("-l", "--local-path", type=str, default=None, help="Specify Local Path")
-    parser.add_argument("-r", "--remote-path", type=str, default=None, help="Specify Remote (BLT) Path")
-    parser.add_argument("-n", "--username", type=str, default=None, help="Specify BLT username. Required if different from local username.")
-    parser.add_argument("-k", "--private-key", type=str, default=None, help="Specify private key location. Optional")
+    parser.add_argument("-u",
+                        "--upload",
+                        action="store_true",
+                        default=False,
+                        help="Use upload mode")
+    parser.add_argument("-d",
+                        "--download",
+                        action="store_true",
+                        default=False,
+                        help="Use download mode")
+    parser.add_argument("-l",
+                        "--local-path",
+                        type=str,
+                        default=None,
+                        help="Specify Local Path")
+    parser.add_argument("-r",
+                        "--remote-path",
+                        type=str,
+                        default=None,
+                        help="Specify Remote (BLT) Path")
+    parser.add_argument(
+        "-n",
+        "--username",
+        type=str,
+        default=None,
+        help="Specify BLT username. Required if different from local username."
+    )
+    parser.add_argument("-k",
+                        "--private-key",
+                        type=str,
+                        default=None,
+                        help="Specify private key location. Optional")
     args = parser.parse_args()
 
     if args.upload and args.download:
@@ -98,9 +126,12 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if args.upload:
-        upload_file_to_blt(local_path=args.local_path, remote_path=args.remote_path, username=args.username)
+        upload_file_to_blt(local_path=args.local_path,
+                           remote_path=args.remote_path,
+                           username=args.username)
     elif args.download:
-        download_file_from_blt(local_path=args.local_path, remote_path=args.remote_path, username=args.username)
+        download_file_from_blt(local_path=args.local_path,
+                               remote_path=args.remote_path,
+                               username=args.username)
     else:
         print("WARN: No action specified. Exiting.")
-
