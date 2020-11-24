@@ -1,12 +1,15 @@
 from funcx.sdk.client import FuncXClient
 import os
 import subprocess
-
+from .blt_transfer import upload_file_to_blt, download_file_from_blt
 
 
 def blt_transfer(mode="u", remote_path=None, local_path=None, username=None):
-	cmd = f"python3 blt_transfer.py -{mode} -n {username} -l {local_path} -r {remote_path}"
-	print(subprocess.check_output(cmd, shell=True))
+	if mode == "u":
+		upload_file_to_blt(local_path=local_path, remote_path=remote_path, username=username)
+	elif mode == "d":
+		download_file_from_blt(local_path=local_path, remote_path=remote_path, username=username)
+
 
 def convert_format(file, output, infmt="nexus", outfmt="phylip"):
 	cmd = f"bioconvert --input {file} --infmt {infmt} --output {outpath} --outfmt {outfmt}"
