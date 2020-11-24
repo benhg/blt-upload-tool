@@ -21,18 +21,9 @@ def convert_format(file, output, infmt="nexus", outfmt="phylip"):
     return subprocess.check_output(cmd, shell=True)
 
 
-if __name__ == '__main__':
-    fxc = FuncXClient()
-    remote_path = input("Where do you want to save the file?")
-    username = input("What is your BLT username?")
-    blt_transfer(mode="u",
-                 remote_path=remote_path,
-                 local_path=input("Where is the local file?"),
-                 username=username)
+def run_function_and_print_result(py_fn, py_fn_args, ep_id="3c3f0b4f-4ae4-4241-8497-d7339972ff4a"):
     func_uuid = fxc.register_function(convert_format)
-    blt_small = "3c3f0b4f-4ae4-4241-8497-d7339972ff4a"
-    res = fxc.run(remote_path,
-                  "file.phylip",
+    res = fxc.run(*py_fn_args
                   endpoint_id=blt_small,
                   function_id=func_uuid)
     while True:
@@ -44,3 +35,15 @@ if __name__ == '__main__':
                 continue
             else:
                 raise e
+
+
+if __name__ == '__main__':
+    fxc = FuncXClient()
+    remote_path = input("Where do you want to save the file?")
+    username = input("What is your BLT username?")
+    blt_transfer(mode="u",
+                 remote_path=remote_path,
+                 local_path=input("Where is the local file?"),
+                 username=username)
+    run_function_and_print_result(convert_format, [remote_path, "int_file.phylip"], ep_id="3c3f0b4f-4ae4-4241-8497-d7339972ff4a")
+    
