@@ -3,6 +3,8 @@ import os
 import subprocess
 from .blt_transfer import upload_file_to_blt, download_file_from_blt
 
+BLT_SMALL_ID = "3c3f0b4f-4ae4-4241-8497-d7339972ff4a"
+INTERMEDIARY_FILENAME = "tempfile.phylip"
 
 def blt_transfer(mode="u", remote_path=None, local_path=None, username=None):
     if mode == "u":
@@ -21,11 +23,12 @@ def convert_format(file, output, infmt="nexus", outfmt="phylip"):
     return subprocess.check_output(cmd, shell=True)
 
 
-def run_function_and_print_result(py_fn, py_fn_args, ep_id="3c3f0b4f-4ae4-4241-8497-d7339972ff4a"):
+def run_function_and_print_result(py_fn,
+                                  py_fn_args,
+                                  ep_id="3c3f0b4f-4ae4-4241-8497-d7339972ff4a"
+                                  ):
     func_uuid = fxc.register_function(convert_format)
-    res = fxc.run(*py_fn_args
-                  endpoint_id=blt_small,
-                  function_id=func_uuid)
+    res = fxc.run(*py_fn_args, endpoint_id=blt_small, function_id=func_uuid)
     while True:
         try:
             print(fxc.get_result(res))
@@ -45,5 +48,6 @@ if __name__ == '__main__':
                  remote_path=remote_path,
                  local_path=input("Where is the local file?"),
                  username=username)
-    run_function_and_print_result(convert_format, [remote_path, "int_file.phylip"], ep_id="3c3f0b4f-4ae4-4241-8497-d7339972ff4a")
-    
+    run_function_and_print_result(convert_format,
+                                  [remote_path, INTERMEDIARY_FILENAME],
+                                  ep_id=BLT_SMALL_ID)
