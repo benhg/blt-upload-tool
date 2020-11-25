@@ -6,7 +6,11 @@ import time
 from blt_transfer import upload_file_to_blt, download_file_from_blt
 from config import *
 
-def blt_transfer_func(mode="u", remote_path=None, local_path=None, username=None):
+
+def blt_transfer_func(mode="u",
+                      remote_path=None,
+                      local_path=None,
+                      username=None):
     if mode == "u":
         upload_file_to_blt(local_path=local_path,
                            remote_path=remote_path,
@@ -44,9 +48,14 @@ def run_function_and_print_result(py_fn,
                 raise e
 
 
-def run_raxml_cmd(input_file, run_name, model_of_evolution="GTRGAMMA", thread_count=12, random_seed=None):
+def run_raxml_cmd(input_file,
+                  run_name,
+                  model_of_evolution="GTRGAMMA",
+                  thread_count=12,
+                  random_seed=None):
     import random
-    r_sd = random_seed if random_seed is not None else random.randint(0, 200000000)
+    r_sd = random_seed if random_seed is not None else random.randint(
+        0, 200000000)
     cmd = f"raxmlHPC -T {thread_count} -m {model_of_evolution} -n {run_name} -s {input_file} -p {r_sd}"
     import subprocess
     return subprocess.check_output(cmd, shell=True)
@@ -58,11 +67,11 @@ if __name__ == '__main__':
     username = input("What is your BLT username? ")
     local_file = input("Where is the local file? ")
     remote_path = input("Where do you want to save the file? ")
-    
+
     blt_transfer_func(mode="u",
-                 remote_path=remote_path,
-                 local_path=local_file,
-                 username=username)
+                      remote_path=remote_path,
+                      local_path=local_file,
+                      username=username)
     print("Uploaded input file.")
 
     print("Converting .nex to .phylip...")
@@ -79,9 +88,8 @@ if __name__ == '__main__':
     final_loc = input("Where should the local file be saved? ")
 
     blt_transfer_func(mode="d",
-                 remote_path=output_loc,
-                 local_path=final_loc,
-                 username=username)
+                      remote_path=output_loc,
+                      local_path=final_loc,
+                      username=username)
 
     print(f"Please open the tree at {final_loc} with FigTree.")
-
