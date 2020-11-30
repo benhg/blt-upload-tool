@@ -31,7 +31,7 @@ def check_files(local_path, remote_path, connection):
         sys.exit(1)
 
 
-def upload_file_to_blt(local_path=None, remote_path="~", username=None):
+def upload_file_to_blt(local_path=None, remote_path="~", username=None, force=False):
     print(f"Uploading {local_path} to BLT at location {remote_path}")
     conn = setup_ftp_conn(username)
     check_files(local_path, remote_path, conn)
@@ -40,7 +40,7 @@ def upload_file_to_blt(local_path=None, remote_path="~", username=None):
     if not (os.path.isfile(local_path) or os.path.isdir(local_path)):
         print(f"ERROR: Local Path {local_path} Does not Exist")
         sys.exit(1)
-    if conn.exists(remote_path):
+    if conn.exists(remote_path) and not force:
         res = input(f"WARN: Remote File {remote_path} Exists. Continue? y/N: ")
         if res.lower() != "y":
             print("Aborting.")
@@ -57,7 +57,7 @@ def upload_file_to_blt(local_path=None, remote_path="~", username=None):
         conn.put(local_path, remote_path)
 
 
-def download_file_from_blt(local_path=".", remote_path=None, username=None):
+def download_file_from_blt(local_path=".", remote_path=None, username=None, force=False):
     print(f"Downloading {remote_path} to BLT at location {local_path}")
     conn = setup_ftp_conn(username)
     check_files(local_path, remote_path, conn)
@@ -66,7 +66,7 @@ def download_file_from_blt(local_path=".", remote_path=None, username=None):
     if not conn.exists(remote_path):
         print(f"ERROR: Remote Path {remote_path} Does not Exist")
         sys.exit(1)
-    if (os.path.isfile(local_path) or os.path.isdir(local_path)):
+    if (os.path.isfile(local_path) or os.path.isdir(local_path)) and not force:
         res = input(f"WARN: Local File {local_path} Exists. Continue? y/N: ")
         if res.lower() != "y":
             print("Aborting.")

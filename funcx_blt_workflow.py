@@ -14,11 +14,13 @@ def blt_transfer_func(mode="u",
     if mode == "u":
         upload_file_to_blt(local_path=local_path,
                            remote_path=remote_path,
-                           username=username)
+                           username=username,
+                           force=True)
     elif mode == "d":
         download_file_from_blt(local_path=local_path,
                                remote_path=remote_path,
-                               username=username)
+                               username=username,
+                               force=True)
 
 
 def convert_format(file, output, infmt="nexus", outfmt="phylip"):
@@ -40,12 +42,9 @@ def run_function_and_print_result(py_fn,
             print(fxc.get_result(res))
             break
         except Exception as e:
-            if "waiting-for-ep" in str(e):
+            if "waiting-for" in str(e):
                 continue
-            elif "waiting-for-nodes" in str(e):
-                continue
-            else:
-                raise e
+            raise e
 
 
 def run_raxml_cmd(input_file,
@@ -78,12 +77,11 @@ if __name__ == '__main__':
     run_function_and_print_result(convert_format,
                                   [remote_path, INTERMEDIARY_FILENAME],
                                   ep_id=BLT_SMALL_ID)
-
     print("Generating tree with raxml...")
     run_function_and_print_result(run_raxml_cmd,
                                   [INTERMEDIARY_FILENAME, RUN_NAME],
                                   ep_id=BLT_XLARGE_ID)
-
+    _ = input()
     output_loc = input("Please paste in the output file name: ")
     final_loc = input("Where should the local file be saved? ")
 
@@ -93,3 +91,5 @@ if __name__ == '__main__':
                       username=username)
 
     print(f"Please open the tree at {final_loc} with FigTree.")
+
+    
