@@ -38,8 +38,10 @@ def run_function_and_print_result(py_fn,
     while True:
         try:
             print("Waiting for results...")
-            time.sleep(5)
-            print(fxc.get_result(res))
+            time.sleep(SLEEP_TIME)
+            byte_string = fxc.get_result(res)
+            real_string = str(byte_string, encoding="utf-8")
+            print(real_string.replace("\\n", '\n'))
             break
         except Exception as e:
             if "waiting-for" in str(e):
