@@ -38,8 +38,10 @@ def run_function_and_print_result(py_fn,
     while True:
         try:
             print("Waiting for results...")
-            time.sleep(5)
-            print(fxc.get_result(res))
+            time.sleep(SLEEP_TIME)
+            byte_string = fxc.get_result(res)
+            real_string = str(byte_string, encoding="utf-8")
+            print(real_string.replace("\\n", '\n'))
             break
         except Exception as e:
             if "waiting-for" in str(e):
@@ -59,13 +61,18 @@ def run_raxml_cmd(input_file,
     import subprocess
     return subprocess.check_output(cmd, shell=True)
 
+def cleanup(input_file, run_name, intermediary):
+    cmd = f"rm -f {intermediary} ; rm -f *{run_name}" # ; rm -f {input_file}
+    import subprocess
+    return subprocess.check_output(cmd, shell=True)
+
 
 if __name__ == '__main__':
     fxc = FuncXClient()
 
     username = input("What is your BLT username? ")
     local_file = input("Where is the local file? ")
-    remote_path = input("Where do you want to save the file? ")
+    remote_path = input("Where do you want to save the file on BLT? ")
 
     blt_transfer_func(mode="u",
                       remote_path=remote_path,
@@ -91,5 +98,9 @@ if __name__ == '__main__':
                       username=username)
 
     print(f"Please open the tree at {final_loc} with FigTree.")
+
+    yes = input("Would you like to cleanup your files? y/N: ")
+    if yes.lower() == "y":
+      run_function_and_print_result(cleanup, [remote_path, RUN_NAME, INTERMEDIARY_FILENAME], ep_id=BLT_SMALL_ID)
 
     
