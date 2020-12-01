@@ -61,8 +61,8 @@ def run_raxml_cmd(input_file,
     import subprocess
     return subprocess.check_output(cmd, shell=True)
 
-def cleanup(input_file, run_name, intermediary):
-    cmd = f"rm -f {intermediary} ; rm -f *{run_name}" # ; rm -f {input_file}
+def cleanup(input_file, run_name, intermediary, blt_username):
+    cmd = f"rm -f {intermediary} ; rm -f /home/users/{blt_username}/*{run_name} ; rm -f {input_file}"
     import subprocess
     return subprocess.check_output(cmd, shell=True)
 
@@ -101,6 +101,6 @@ if __name__ == '__main__':
 
     yes = input("Would you like to cleanup your files? y/N: ")
     if yes.lower() == "y":
-      run_function_and_print_result(cleanup, [remote_path, RUN_NAME, INTERMEDIARY_FILENAME], ep_id=BLT_SMALL_ID)
+      run_function_and_print_result(cleanup, [remote_path, RUN_NAME, INTERMEDIARY_FILENAME, username], ep_id=BLT_SMALL_ID)
 
     
